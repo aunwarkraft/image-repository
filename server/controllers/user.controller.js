@@ -31,6 +31,11 @@ module.exports = {
               const newUser = new User({username, password});
               // Hash password before saving in database
               bcrypt.genSalt(10, (err, salt) => {
+                if (err) {
+                  return res.status(500).json({
+                    error: err,
+                  });
+                }
                 bcrypt.hash(newUser.password, salt, (err, hash) => {
                   if (err) {
                     return res.status(500).json({
@@ -109,5 +114,14 @@ module.exports = {
         return res.status(200).json({success: `logged in ${user.id}`});
       });
     })(req, res, next);
+  },
+
+  deleteUserSession: (req, res, next) => {
+    req.session.destroy(function() {
+      res.clearCookie('connect.sid');
+      return res.status(200).json({
+        message: 'logout successful',
+      });
+    });
   },
 };
