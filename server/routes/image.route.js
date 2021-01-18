@@ -22,7 +22,7 @@ module.exports = (app) => {
     imageController.getPublicImageById(req, res);
   });
 
-  app.delete('/api/images/mine', isAuthenticated, (req, res) => {
-    imageController.deleteAllUserImages(req, res);
+  app.delete('/api/images/:id', isAuthenticated, (req, res) => {
+    imageController.deleteImageById(req, res);
   });
 };
