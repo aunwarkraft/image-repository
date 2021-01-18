@@ -39,5 +39,6 @@ app.use(passport.session());
 
 // ----- Routes -----
 require('./server/routes/user.route')(app);
+require('./server/routes/image.route')(app);
 
 module.exports = app;
