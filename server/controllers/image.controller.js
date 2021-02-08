@@ -7,11 +7,19 @@ const storage = multer.diskStorage({
     callback(null, uploadDirectory);
   },
   filename: function(req, file, callback) {
-    // set filename and assign properties for image model
-    const serverImageName = 'image_' + Date.now() + '_' + Math.round(Math.random() * 1E9);
-    req.body.server_image_name = serverImageName;
-    req.body.upload_image_name = file.originalname;
-    callback(null, serverImageName);
+    if (file.mimetype == 'image/png' ||
+        file.mimetype == 'image/jpg' ||
+        file.mimetype == 'image/jpeg') {
+      // set filename and assign properties for image model
+      const serverImageName = 'image_' + Date.now() + '_' +
+                              Math.round(Math.random() * 1E9);
+      req.body.server_image_name = serverImageName;
+      req.body.upload_image_name = file.originalname;
+      callback(null, serverImageName);
+    } else {
+      return callback(
+          new Error('Only .png, .jpg and .jpeg format allowed!'), false);
+    }
   },
 });
 
@@ -149,6 +157,33 @@ module.exports = {
             error: err,
           });
         });
+  },
+
+  updateImageById: (req, res) =>{
+    if (req.body.public !== undefined &&
+        typeof(req.body.public) === 'boolean') {
+      Image.findOneAndUpdate({uploader_id: req.user._id, _id: req.params.id},
+          {public: req.body.public},
+          {new: true})
+          .then((image) => {
+            if (image) {
+              return res.status(200).json({message: 'updated successfully'});
+            } else {
+              return res.status(404).json({
+                error: {
+                  description: 'Image does not exist',
+                },
+              });
+            }
+          })
+          .catch((err) => {
+            return res.status(500).json({
+              error: err,
+            });
+          });
+    } else {
+      return res.send({success: true});
+    }
   },
 
   deleteImageById: (req, res) =>{

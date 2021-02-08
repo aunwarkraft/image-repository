@@ -22,6 +22,10 @@ module.exports = (app) => {
     imageController.getPublicImageById(req, res);
   });
 
+  app.patch('/api/images/:id', isAuthenticated, (req, res) => {
+    imageController.updateImageById(req, res);
+  });
+
   app.delete('/api/images/:id', isAuthenticated, (req, res) => {
     imageController.deleteImageById(req, res);
   });
