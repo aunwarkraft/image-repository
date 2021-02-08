@@ -159,6 +159,33 @@ module.exports = {
         });
   },
 
+  updateImageById: (req, res) =>{
+    if (req.body.public !== undefined &&
+        typeof(req.body.public) === 'boolean') {
+      Image.findOneAndUpdate({uploader_id: req.user._id, _id: req.params.id},
+          {public: req.body.public},
+          {new: true})
+          .then((image) => {
+            if (image) {
+              return res.status(200).json({message: 'updated successfully'});
+            } else {
+              return res.status(404).json({
+                error: {
+                  description: 'Image does not exist',
+                },
+              });
+            }
+          })
+          .catch((err) => {
+            return res.status(500).json({
+              error: err,
+            });
+          });
+    } else {
+      return res.send({success: true});
+    }
+  },
+
   deleteImageById: (req, res) =>{
     Image.findOneAndDelete({uploader_id: req.user._id, _id: req.params.id})
         .then((image) => {

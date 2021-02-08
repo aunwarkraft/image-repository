@@ -54,6 +54,12 @@ $ curl -b cookie.txt http://localhost:8080/api/images/mine/image_id --output fil
 $ curl -b cookie.txt http://localhost:8080/api/images/public/image_id --output file
 ```
 
+- **description: update the public sharing of an image**
+```shell
+$ curl -H "Content-Type: application/json" -X PATCH -d '{"public": false}' http://localhost:8080/api/images/image_id
+```
+Note: Send {"public": false} to make image private and send {"public": true} to share image with public.
+
 - **description: delete an image with ID**
 ```shell
 $ curl -X DELETE -b cookie.txt http://localhost:8080/api/images/image_id
